@@ -8,11 +8,4 @@ describe('WebApp', function() {
     expect(browser.getTitle()).toEqual('Shop - smartfrog.com');
   });
 
-  it('should load orders list', function(){
-  	browser.get("https://webapp.sf-dev1.com/de-de/account/orders");
-  	var ordersRows = element.all(by.repeater('order in vm.ordersList'));
-  	expect(ordersRows).toEqual(2);
-  })
-
-
 });

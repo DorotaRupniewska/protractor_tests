@@ -8,9 +8,20 @@
 # Run tests:
 
 	- webdriver-manager start 
-
 	- protractor conf.js
 
+# Run specific suit test:
+	
+	- protractor conf.js --suite suite_name
+
+
+Available suite tests (listed in conf.js -> suites):
+
+	- userAccount	
+	- login
+
+login with params:	
+	protractor conf.js --suite login --parameters.login.username=user_name --parameters.login.password=user_password
 
 # Info
 
