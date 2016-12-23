@@ -19,9 +19,13 @@ Available suite tests (listed in conf.js -> suites):
 
 	- userAccount	
 	- login
+	- register
 
-login with params:	
+login with params (not used at this version):	
 	protractor conf.js --suite login --parameters.login.username=user_name --parameters.login.password=user_password
+
+//TODO
+add parameters to test different environments	
 
 # Info
 

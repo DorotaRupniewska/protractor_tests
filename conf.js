@@ -7,7 +7,8 @@ exports.config = {
   },
   suites: {
   	userAccount: 'userAccount.spec.js',
-  	login: 'login.spec.js'
+  	login: 'login.spec.js',
+  	register: 'registration-QA_2253.spec.js'
   },
   jasmineNodeOpts: {
     showColors: true
