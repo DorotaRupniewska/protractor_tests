@@ -2,32 +2,39 @@
 
 var Login = require('./pages/login.page.js');
 
+/** variables **/
 var username = 'test.user+dev1@smartfrog.com';
 var password = 'Test123!!!';
 
-describe('Login', function(){
+describe('WebApp', function(){
 	var accountPage, loginPage;
 
 	beforeAll(function(){
 		loginPage = new Login();
-		// loginPage.login(browser.params.login.username, browser.params.login.password);		
-		loginPage.login(username, password);
+        loginPage.go();
+		// loginPage.login(browser.params.login.username, browser.params.login.password);
 	});
 
 	afterAll(function(){
 		//logout
-		element(by.tagName('form.navbar-form')).element(by.tagName('button.btn-logout')).click();
+		//element(by.id('single-button')).click();
 	});
 
+	it('should render login page', function(){
+        var currentUrl = browser.driver.getCurrentUrl();
+        expect(currentUrl).toMatch("/login");
+    });
 
 	it('should redirect after login', function(){
+	    loginPage.login(username, password);
+	    browser.waitForAngular();
 		expect(browser.getTitle()).toEqual('Meine Kameras - Smartfrog');
 	});
 
-	it('should display user name in the page header', function(){
-		var headerUserName = element(by.className('user-email'));
-		expect(headerUserName.getText()).toEqual(username);
-	});
+	// it('should display user name in the page header', function(){
+	// 	var headerUserName = element(by.className('user-email'));
+	// 	expect(headerUserName.getText()).toEqual(username);
+	// });
 
 
 

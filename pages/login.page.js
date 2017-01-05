@@ -1,19 +1,19 @@
 'use strict';
 
 var LoginPage = function(){
-	browser.get('https://webapp.sf-dev1.com/de-de/login');
+    this.userName = element(by.model('username'));
+    this.password = element(by.model('password'));
+    this.loginButton = element(by.className('btn-login'));
+
+    this.login = function(username, password){
+        this.userName.sendKeys(username);
+        this.password.sendKeys(password);
+        this.loginButton.click();
+    };
+
+    this.go = function(){
+        browser.get('https://webapp.sf-dev1.com/de-de/login');
+    }
 };
-
-LoginPage.prototype = Object.create({},{
-	userName: 		{ get: function(){ return element(by.model('username'));}},
-	password: 		{ get: function(){ return element(by.model('password'));}},
-	loginButton: 	{ get: function(){ return element(by.className('btn-login'));}},
-
-	login: { value: function(username, password){
-		this.userName.sendKeys(username);
-		this.password.sendKeys(password);
-		this.loginButton.click();
-	}}
-});
 
 module.exports = LoginPage;

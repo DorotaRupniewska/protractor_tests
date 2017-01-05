@@ -2,6 +2,7 @@
 
 var RegisterPage = require("./pages/register.page.js");
 
+/** variables **/
 var email = "";
 var email2 = "";
 var password = "";
