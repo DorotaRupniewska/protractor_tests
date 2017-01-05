@@ -2,12 +2,12 @@
 
 var LoginPage = function(){
     this.userName = element(by.model('username'));
-    this.password = element(by.model('password'));
+    this.pass = element(by.model('password'));
     this.loginButton = element(by.className('btn-login'));
 
     this.login = function(username, password){
         this.userName.sendKeys(username);
-        this.password.sendKeys(password);
+        this.pass.sendKeys(password);
         this.loginButton.click();
     };
 

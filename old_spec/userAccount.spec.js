@@ -12,8 +12,14 @@ describe('user account', function(){
 
 	beforeAll(function(){
 		loginPage = new Login();
+		loginPage.go();
         loginPage.login(username, password);
+    });
+
+	beforeEach(function(){
+        browser.waitForAngular();
         accountPage = new AccountPage();
+        accountPage.go();
     });
 
     afterAll(function(){
@@ -22,14 +28,11 @@ describe('user account', function(){
     });
 
 	it('should load last order', function(){
-	    accountPage.go();
-	    browser.waitForAngular();
-	    accountPage.lastOrderText.click().then(function(){
-            element(by.className("order-header")).element(by.tagName('h1')).getText().then(function(text){
-                expect(text.indexOf("Bestellnummer") !== -1).toBe(true);
-            });
+	    accountPage.lastOrder();
+        browser.waitForAngular();
+        element(by.className("order-header")).element(by.tagName('h1')).getText().then(function(text){
+            expect(text.indexOf("Bestellnummer") !== -1).toBe(true);
         });
-
 	  });
 
     // it('should redirect after login', function(){
