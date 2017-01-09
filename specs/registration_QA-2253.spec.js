@@ -1,6 +1,7 @@
 'use strict';
 
 var RegisterPage = require("../pages/register.page.js");
+var MainPage = require("../pages/main.page.js");
 var seed = 'automation'+ Math.round(new Date().getTime()/1000);
 
 /** variables **/
@@ -17,7 +18,7 @@ var password = {
 var countryCode = "DE";
 
 describe("Registration page", function(){
-	var registerPage;
+	var registerPage, mainPage;
 
 	beforeAll(function(){
 		registerPage = new RegisterPage();
@@ -249,10 +250,15 @@ describe("Registration page", function(){
 
 //--  Check if the 'Register now' button leads you to a logged in page
     it('should redirect to a logged in page after registration', function(){
+        //TODO handle redirect
         registerPage.fillInRegisterFields(email, email, password.average, countryCode);
         registerPage.registerButton.isEnabled().then(function(){
             registerPage.registerButton.click();
-            expect(browser.getTitle()).toEqual('Meine Kameras - Smartfrog');
+            browser.waitForAngular();
+            mainPage = new MainPage();
+            mainPage.go();
+            browser.waitForAngular();
+            expect(browser.getCurrentUrl()).toEqual(browser.params.MAIN_URL + "/");
         });
 
     });
