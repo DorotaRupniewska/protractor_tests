@@ -8,7 +8,8 @@ exports.config = {
   suites: {
   	login: './specs/login_QA-1734.spec.js',
   	register: './specs/registration_QA-2253.spec.js',
-    contactLink: './specs/contactLink_QA-1732.spec.js'
+    contactLink: './specs/contactLink_QA-1732.spec.js',
+    footerLinks: './specs/footerLinks_QA-2306.spec.js'
   },
   jasmineNodeOpts: {
     showColors: true
