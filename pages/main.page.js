@@ -3,7 +3,7 @@
 //main page after login
 var MainPage = function(){
     this.go = function(){
-        browser.get("https://webapp.sf-dev1.com/de-de/");
+        browser.get(browser.params.MAIN_URL);
     }
 };
 

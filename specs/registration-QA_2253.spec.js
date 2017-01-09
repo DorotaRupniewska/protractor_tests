@@ -1,6 +1,6 @@
 'use strict';
 
-var RegisterPage = require("./pages/register.page.js");
+var RegisterPage = require("../pages/register.page.js");
 var seed = 'automation'+ Math.round(new Date().getTime()/1000);
 
 /** variables **/
@@ -90,6 +90,7 @@ describe("Registration page", function(){
 //-- Check if there is a error message when entering no or an incomplete Email address the second time
     //TODO popover sholud be visible ONLY when first email is corrected
     it('should display correct error message when entering no email address the second time', function(){
+        registerPage.setField(registerPage.emailField, email);
         registerPage.setField(registerPage.emailRepeatField, "");
         registerPage.emailRepeatField.click();
         expect(registerPage.isPopoverCorrect("email2")).toBe(true);
@@ -107,8 +108,8 @@ describe("Registration page", function(){
         expect(registerPage.isHintClassCorrect(1, "text-danger")).toBe(true);
     });
 
-    xit('should display error icon when entering incomplete email address the second time', function(){
-        registerPage.setField(registerPage.emailRepeatField, incompleteEmail);
+    it('should display error icon when entering incomplete email address the second time', function(){
+        registerPage.setField(registerPage.emailRepeatField, "");
         registerPage.emailRepeatField.click();
         expect(registerPage.isIconCorrect(registerPage.emailRepeatField, "x")).toBe(true);
     });

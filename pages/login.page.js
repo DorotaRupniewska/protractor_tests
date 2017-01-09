@@ -12,7 +12,7 @@ var LoginPage = function(){
     };
 
     this.go = function(){
-        browser.get('https://webapp.sf-dev1.com/de-de/login');
+        browser.get(browser.params.MAIN_URL + '/login');
     }
 };
 

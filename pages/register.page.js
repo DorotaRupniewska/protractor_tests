@@ -76,6 +76,7 @@ var RegistrationPage = function(){
         var wrapper = field.getWebElement();
 
         getElementClasses(wrapper.getDriver().findElement(by.className("validity-mark")).findElement(by.tagName('span'))).then(function (icoClasses) {
+            console.log("classes for " + icon + " : " + icoClasses);
             switch (icon) {
                 case "x":
                     deferred.fulfill(stringContain(icoClasses, "text-danger") && stringContain(icoClasses, "fa-times"));
@@ -152,7 +153,7 @@ var RegistrationPage = function(){
     };
 
     this.go = function(){
-		browser.get('https://webapp.sf-dev1.com/de-de/register');
+		browser.get(browser.params.MAIN_URL + '/register');
     }
 };
 
