@@ -12,7 +12,7 @@ var LoginPage = function(){
     };
 
     this.go = function(){
-        browser.get(browser.params.MAIN_URL + '/login');
+        browser.get(browser.params.MAIN_URL_DEV + '/login');
     }
 };
 

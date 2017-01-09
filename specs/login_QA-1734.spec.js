@@ -21,13 +21,13 @@ describe("Login Page", function(){
     });
 
     it('should render login page', function(){
-        expect(browser.getCurrentUrl()).toEqual(browser.params.MAIN_URL + '/login');
+        expect(browser.getCurrentUrl()).toEqual(browser.params.MAIN_URL_DEV + '/login');
     });
     
     it('should login an user', function(){
         loginPage.login(userName, password);
         browser.waitForAngular();
         browser.refresh();
-        expect(browser.getCurrentUrl()).toEqual(browser.params.MAIN_URL + "/");
+        expect(browser.getCurrentUrl()).toEqual(browser.params.MAIN_URL_DEV + "/");
     });
 });

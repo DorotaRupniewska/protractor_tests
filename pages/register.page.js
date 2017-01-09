@@ -153,7 +153,7 @@ var RegistrationPage = function(){
     };
 
     this.go = function(){
-		browser.get(browser.params.MAIN_URL + '/register');
+		browser.get(browser.params.MAIN_URL_DEV + '/register');
     }
 };
 

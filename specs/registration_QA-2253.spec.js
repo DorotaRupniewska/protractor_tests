@@ -258,7 +258,7 @@ describe("Registration page", function(){
             mainPage = new MainPage();
             mainPage.go();
             browser.waitForAngular();
-            expect(browser.getCurrentUrl()).toEqual(browser.params.MAIN_URL + "/");
+            expect(browser.getCurrentUrl()).toEqual(browser.params.MAIN_URL_DEV + "/");
         });
 
     });
