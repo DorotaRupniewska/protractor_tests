@@ -28,6 +28,7 @@ var RegistrationPage = function(){
     this.countrySelect = element(by.model("vm.country"));
 
     this.popover = element(by.className('popover'));
+    this.popoverPasswordHint = this.popover.element(by.className("label"));
 
     //TODO add name tag
     this.termsOfUseLink = element(by.linkText("Nutzungsbedingungen"));
@@ -43,7 +44,7 @@ var RegistrationPage = function(){
         });
     };
 
-    this.isPopoverCorrect = function(type, isCorrect){
+    this.isPopoverCorrect = function(type){
         return protractor.promise.all([checkPopoverHeader(type, this.popover), checkPopoverHints(type, this.popover)]).then(function(params){
             var out = true;
             params.forEach(function(p){
@@ -70,10 +71,12 @@ var RegistrationPage = function(){
     };
 
     //icon in text field: green tick or red x
-    this.isIconCorrect = function(field, icon){
-    var deferred = protractor.promise.defer();
-        getElementClasses(field).then(function(icoClasses){
-            switch(icon){
+    this.isIconCorrect = function (field, icon) {
+        var deferred = protractor.promise.defer();
+        var wrapper = field.getWebElement();
+
+        getElementClasses(wrapper.getDriver().findElement(by.className("validity-mark")).findElement(by.tagName('span'))).then(function (icoClasses) {
+            switch (icon) {
                 case "x":
                     deferred.fulfill(stringContain(icoClasses, "text-danger") && stringContain(icoClasses, "fa-times"));
                     break;
@@ -89,7 +92,7 @@ var RegistrationPage = function(){
         return deferred.promise;
     };
 
-    this.getPassword = function(long){
+    this.getRandomPassword = function(long){
         var pass = "";
         for(var i = 0; i < long; i++){
             pass += "a";
@@ -98,12 +101,54 @@ var RegistrationPage = function(){
         return pass;
     };
 
-    this.register = function(email, email2, password, country){
-        this.emailField.sendKeys(email);
-        this.emailRepeatField.sendKeys(email2);
-        this.passwordField.sendKeys(password);
+    /**
+     * Check if there is a 'How strong is your password' displayed correctly inside popover
+     * @param expectedHint - could be one of:
+     *  - 'very_weak'               - red
+     *  - 'weak'                    - light orange
+     *  - 'average'                 - orange
+     *  - 'strong' or 'very_strong' - green (marked with the same color)
+     */
+    this.isStrongPasswordHintCorrect = function(expectedHint){
+        if(!expectedHint){
+            return false;
+        }else{
+            var deferred = protractor.promise.defer();
+            getElementClasses(this.popoverPasswordHint).then(function(classes){
+                switch(expectedHint){
+                    case "very_weak":
+                        deferred.fulfill(stringContain(classes, "label-danger"));
+                        break;
+                    case "weak":
+                        deferred.fulfill(stringContain(classes, "label-warning"));
+                        break;
+                    case "average":
+                        deferred.fulfill(stringContain(classes, "label-primary"));
+                        break;
+                    case "strong":
+                    case "very_strong":
+                        deferred.fulfill(stringContain(classes, "label-success"));
+                        break;
+                    default:
+                        deferred.reject("unknown password strength name " + expectedHint);
+                }
+            });
+            return deferred.promise;
+        }
+    };
+
+    this.fillInRegisterFields = function(email, email2, password, country){
+        var deferred = protractor.promise.defer();
         this.countrySelect.sendKeys(country);
-        this.registerButton.click();
+        protractor.promise.all([
+            this.setField(this.emailField, email),
+            this.setField(this.emailRepeatField, email2),
+            this.setField(this.passwordField, password)
+        ]).then(function(){
+            deferred.fulfill();
+        });
+
+        return deferred.promise;
     };
 
     this.go = function(){
@@ -115,8 +160,9 @@ var checkPopoverHeader = function (type, popover) {
     var deferred = protractor.promise.defer();
     var template = templateData[type];
 
-    if(!popover.isPresent() || !templateData[type]){
-        deferred.reject("no popover or template for " + type);
+    if(!popover.isDisplayed() || !templateData[type]){
+        console.log("no popover or template for " + type);
+        return deferred.reject("no popover or template for " + type);
     }
 
     popover.element(by.tagName('h4')).getText().then(function (value) {
@@ -162,11 +208,9 @@ var stringContain = function(str, check){
 
 var getElementClasses = function(field){
     var deferred = protractor.promise.defer();
-    var wrapper = field.getWebElement();
 
-    //TODO move element finder outside
-    wrapper.getDriver().findElement(by.className("validity-mark")).findElement(by.tagName('span')).getAttribute('class').then(function(classes){
-        console.log("classes ", classes);
+    field.getAttribute('class').then(function(classes){
+        // console.log("classes ", classes);
         deferred.fulfill(classes);
     });
 
