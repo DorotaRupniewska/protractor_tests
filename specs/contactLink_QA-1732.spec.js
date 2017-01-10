@@ -24,7 +24,7 @@ describe('Main website page', function(){
         mainPage.contactLink.getAttribute('href').then(function(tagName){
             browser.ignoreSynchronization = true;
             browser.get(tagName);
-            expect(tagName).toBe(browser.params.MAIN_URL_SF + '/kontakt/');
+            expect(browser.getCurrentUrl()).toBe(browser.params.MAIN_URL_SF + '/kontakt/');
         });
     });
 });

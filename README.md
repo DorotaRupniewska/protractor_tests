@@ -17,14 +17,16 @@
 
 Available suite tests (listed in conf.js -> suites):
 
-	- register (QA_2253)
+	- register (QA-2253)
+	- login (QA-1734)
+	- contactLink (QA-1732)
+	- footerLinks (QA-2306)
 
 login with params (not used at this version):	
 	protractor conf.js --suite login --parameters.login.username=user_name --parameters.login.password=user_password
 	
 # Parameters
-	Some suit tests uses variables that can be change if needed. For example, you can login or register using different user names and passwords. Variables that can be change are located in files 
-	***.spec.js** at the top of the file in 
+	Some suit tests uses variables that can be change if eeded. For example, you can login or register using different user names and passwords. Variables that can be change are located in files  **.spec.js** at the top of the file
 	**/** variables **/** section
 
 //TODO

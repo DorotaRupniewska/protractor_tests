@@ -109,7 +109,7 @@ describe("Registration page", function(){
         expect(registerPage.isHintClassCorrect(1, "text-danger")).toBe(true);
     });
 
-    it('should display error icon when entering incomplete email address the second time', function(){
+    xit('should display error icon when entering incomplete email address the second time', function(){
         registerPage.setField(registerPage.emailRepeatField, "");
         registerPage.emailRepeatField.click();
         expect(registerPage.isIconCorrect(registerPage.emailRepeatField, "x")).toBe(true);
