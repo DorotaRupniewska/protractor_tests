@@ -55,7 +55,8 @@ var RegistrationPage = function(){
     this.privacyPolicyLink = element(by.linkText("Datenschutzrichtlinie"));
     this.cookiesLink = element(by.linkText("Richtlinien zur Verwendung von Cookies"));
 
-    this.registerButton = element(by.buttonText("Jetzt registrieren"));
+    // this.registerButton = element(by.buttonText("Jetzt registrieren"));
+    this.registerButton = element(by.css("button.btn-lg.btn-secondary"));
 
     //methods
     this.isPopoverCorrect = function(type){
@@ -168,8 +169,13 @@ var RegistrationPage = function(){
         return deferred.promise;
     };
 
-    this.go = function(){
-		browser.get(browser.params.MAIN_URL_DEV + '/register');
+    this.go = function(langCode){
+        var langCode = langCode || null;
+        if(langCode){
+            browser.get(browser.params["MAIN_URL_DEV_" + langCode] + '/register');
+        }else{
+            browser.get(browser.params.MAIN_URL_DEV + '/register');
+        }
     }
 };
 

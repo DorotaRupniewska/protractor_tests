@@ -7,35 +7,35 @@ var slidersTempaltes = {
         "descriptions": {
             "text-rec-live": {
                 "DE": "LIVE aufnehmen",
-                "GB": ""
+                "GB": "Record LIVE"
             },
             "text-sf-camera": {
-                "DE": "Smartfrog Cam33",
-                "GB": ""
+                "DE": "Smartfrog Cam",
+                "GB": "Smartfrog Cam"
             },
             "text-watch-any": {
                 "DE": "Unterwegs ansehen",
-                "GB": ""
+                "GB": "Watch anywhere"
             },
             "text-sp": {
-                "DE": "Smartphone66666",
-                "GB": ""
+                "DE": "Smartphone",
+                "GB": "Smartphone"
             },
             "text-tablet": {
                 "DE": "Tablet",
-                "GB": ""
+                "GB": "Tablet"
             },
             "text-three": {
                 "DE": "3",
-                "GB": ""
+                "GB": "3"
             },
             "text-view-opt": {
                 "DE": "Ansichtsoptionen",
-                "GB": ""
+                "GB": "viewing options"
             },
             "text-notebook": {
                 "DE": "Notebook",
-                "GB": ""
+                "GB": "Notebook"
             }
         }
     },
@@ -45,7 +45,7 @@ var slidersTempaltes = {
             "key": "welcome_wizard.monitor._header",
             "value": {
                 "DE": "Schau LIVE von überall was gerade Zuhause passiert",
-                "GB": ""
+                "GB": "Keep an eye on things at home"
             }
         }
     },
@@ -55,7 +55,7 @@ var slidersTempaltes = {
             "key": "welcome_wizard.pets._header",
             "value": {
                 "DE": "Schau von überall was dein Haustier macht",
-                "GB": ""
+                "GB": "See what your pets are doing"
             }
         }
     },
@@ -65,7 +65,7 @@ var slidersTempaltes = {
             "key": "welcome_wizard.children._header",
             "value": {
                 "DE": "Schau rund um die Uhr, ob es deinem Kind gut geht",
-                "GB": ""
+                "GB": "Keep your children in sight"
             }
         }
     },
@@ -75,7 +75,7 @@ var slidersTempaltes = {
             "key": "welcome_wizard.grandparents._header",
             "value": {
                 "DE": "Schau jederzeit ob es deinen Großeltern gut geht",
-                "GB": ""
+                "GB": "Keep in touch with the grandparents"
             }
         }
     },
@@ -85,7 +85,7 @@ var slidersTempaltes = {
             "key": "welcome_wizard.safety._header",
             "value": {
                 "DE": "Schütze deine Familie ganz einfach mit Smartfrog",
-                "GB": ""
+                "GB": "The easiest way to protect your home and family"
             }
         }
     }
@@ -104,6 +104,7 @@ var WelcomeWizardHelper = function() {
     this.modalFooter = this.modalContentWrapper.element(by.className("modal-footer"));
     this.modalCloseBtn = this.modalContentWrapper.element(by.className("close-btn"));
     this.tryItBtn = this.modalFooter.element(by.className("try-it-now-button"));
+    // this.cameraImage = this.modalContentWrapper.element(by.className("camera-without-text"));
 
     //methods
 
@@ -132,6 +133,10 @@ var WelcomeWizardHelper = function() {
 
         return deferred.promise;
     };
+
+    this.isCameraImageDisplayed = function(nr) {
+        return this.modalBody.element(by.className("step-"+ nr +"-bg")).element(by.className("camera-without-text")).isDisplayed();
+    }
 };
 
 var isSlideBackgroundCorrect = function(nr, slideWrapper) {
@@ -152,73 +157,62 @@ var isSlideBodyCorrect = function(nr, slideBody, countryCode) {
     //as for now only first slide has different template
     if(nr === 1){
         return isSlide1TemplateCorrect(slideBody, countryCode)
+
     }else{
-        // return isGeneralSlideTempalteCorrect(nr, slideBody);
-        return {
-            isCorrect: true,
-            errorMsg: ""
-        }
+        return isSlideTemplateCorrect(nr, slideBody, countryCode);
     }
 };
 
 var isSlide1TemplateCorrect = function(slideBody, countryCode) {
     var descriptionsTempalte = slidersTempaltes["slide_1"].descriptions;
-    var errorMsg = "", isCorrect = true;
+    var promisesList = [];
 
     for(var key in descriptionsTempalte){
-        getTextForElement(key, slideBody, countryCode);
+        promisesList.push(getTextForElement(key, slideBody, countryCode));
     }
 
-    return {
-        isCorrect: isCorrect,
-        errorMsg: errorMsg
-    }
-};
-
-var getTextForElement = function(key, slideBody, countryCode){
-    var descriptionsTemplate = slidersTempaltes["slide_1"].descriptions;
-    var errorMsg = "", isCorrect = true;
-    slideBody.element(by.className(key)).getText().then(function(text) {
-        if(text !== descriptionsTemplate[key][countryCode]){
-            isCorrect = false;
-            errorMsg = "incorect text for " + descriptionsTemplate[key];
-        }
-    });
-
-};
-
-var isGeneralSlideTempalteCorrect = function(nr, slideBody) {
-    var header = slideBody.element(by.tagName("h1"));
-    var cameraImg = slideBody.element(by.className("camera-without-text"));
-
-    var correctHeaderTranslateKey = "";
-
-    var isHeaderCorrect = header.getAttribute('translate').then(function(translateKey){
-        return translateKey
-    });
+    return protractor.promise.all(promisesList).then(function() {
         return {
             isCorrect: true,
             errorMsg: ""
         }
-
+    }, function(err) {
+        return {
+            isCorrect: false,
+            errorMsg: "[slide 1] " + err
+        }
+    });
 };
 
-//return class name for description to define each single description from repeater
-var getDescriptionClassName = function(cls) {
-    var none = ["text-abs", "text-header"],
-        out = null;
+var getTextForElement = function(key, slideBody, countryCode){
+    var deferred = protractor.promise.defer();
+    var descriptionsTemplate = slidersTempaltes["slide_1"].descriptions;
 
-    cls.split(" ").map(function(singleClass) {
-        //if started with 'text-' and not one of the 'none' array
-        var startOf = singleClass.indexOf("text-") === 0;
-        var isCorrect = none.indexOf(singleClass) === -1;
+    return slideBody.element(by.className(key)).getText().then(function(text) {
+        if(text !== descriptionsTemplate[key][countryCode]){
+            return deferred.reject("incorect text for " + descriptionsTemplate[key][countryCode]);
+        }
+        deferred.fulfill(true);
+        return deferred.promise;
+    });
+};
 
-        if(startOf && isCorrect){
-            out = singleClass;
+var isSlideTemplateCorrect = function(nr, slideBody, countryCode) {
+    var header = slideBody.element(by.className("step-"+ nr +"-bg")).element(by.tagName("h1")),
+        correctHeaderTranslateKey = slidersTempaltes["slide_" + nr].header.value[countryCode],
+        isCorrect = true, errorMsg = "";
+
+    return header.getText().then(function(text) {
+        var text = text.replace(/\n/g,' ');
+        if(correctHeaderTranslateKey !== text){
+            isCorrect = false;
+            errorMsg = "incorrect header text "+ text +", for slide " + nr;
+        }
+        return {
+            isCorrect: isCorrect,
+            errorMsg: errorMsg
         }
     });
 
-    return out;
 };
-
 module.exports = WelcomeWizardHelper;

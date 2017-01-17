@@ -34,6 +34,19 @@ var Common = function(){
         });
     };
 
+    //select language from header dropdown (currently DE, GB only)
+    this.selectLanguage = function(langCode){
+        var languageSelect = element(by.className('navbar-right')).element(by.css("button#single-button"));
+        languageSelect.isDisplayed().then(function() {
+            languageSelect.click();
+            browser.waitForAngular();
+            browser.sleep(2000);
+            // console.log(" --- logged out --- ");
+        }, function() {
+            // console.log(" --- no logged btn button --- ");
+        });
+    };
+
     //clear field before set a given value
     this.setField = function(filed, value){
         filed.clear().then(function(){
