@@ -17,6 +17,11 @@ describe('Page footer', function(){
         mainPage.go();
     });
 
+    afterAll(function() {
+        mainPage.go();
+    });
+
+
 //-- check if links are correct (attributes href and clickable names)
     it('should have correct links in the footer1 linkable to correct pages', function(){
         var links1 = navigation.all(by.tagName('li a')).map(function(link){

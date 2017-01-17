@@ -1,7 +1,10 @@
 'use strict';
 
 var LoginPage = require("../pages/login.page.js");
+var Common = require("../commons/common.js");
 var MainPage = require("../pages/main.page.js");
+
+var common = new Common();
 
 /** variables **/
 var userName = "test.user+dev1@smartfrog.com";
@@ -11,23 +14,14 @@ describe("Login Page", function(){
     var loginPage, mainPage;
 
     beforeAll(function(){
+        common.logout();
+        mainPage = new MainPage();
         loginPage = new LoginPage();
-    });
-
-    beforeEach(function(){
         loginPage.go();
     });
 
     afterAll(function(){
-        //logout
-        var btnLogout = element(by.className('btn-logout'));
-        btnLogout.isDisplayed().then(function() {
-            element(by.className('btn-logout')).click();
-            browser.waitForAngular();
-            console.log(" --- logged out --- ");
-        }, function() {
-            console.log(" no logged btn button ");
-        });
+        common.logout();
     });
 
     it('should render login page', function(){
@@ -35,10 +29,15 @@ describe("Login Page", function(){
     });
     
     it('should login an user', function(){
-        mainPage = new MainPage();
-        loginPage.login(userName, password);
+        loginPage.fillInLoginForm(userName, password);
         browser.waitForAngular();
-        mainPage.go();
-        expect(browser.getCurrentUrl()).toEqual(browser.params.MAIN_URL_DEV + "/");
+        loginPage.loginButton.isDisplayed().then(function() {
+            loginPage.loginButton.click();
+            browser.waitForAngular();
+            mainPage.go();
+            browser.waitForAngular();
+            browser.sleep(2000);
+            expect(browser.getCurrentUrl()).toEqual(browser.params.MAIN_URL_DEV + "/");
+        });
     });
 });

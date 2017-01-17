@@ -1,14 +1,24 @@
 'use strict';
 
+var Common = require("../commons/common.js");
+
 var LoginPage = function(){
-    this.userName = element(by.model('username'));
+    var common = new Common();
+
     this.pass = element(by.model('password'));
+    this._userName = element(by.model('username'));
     this.loginButton = element(by.className('btn-login'));
 
-    this.login = function(username, password){
-        this.userName.sendKeys(username);
-        this.pass.sendKeys(password);
-        this.loginButton.click();
+    this.fillInLoginForm = function(username, password){
+        var deferred = protractor.promise.defer();
+        protractor.promise.all([
+            common.setField(this._userName, username),
+            common.setField(this.pass, password)
+        ]).then(function(){
+            deferred.fulfill();
+        });
+
+        return deferred.promise;
     };
 
     this.go = function(){

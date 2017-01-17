@@ -1,5 +1,6 @@
 'use strict';
 
+var Common = require("../commons/common.js");
 //-- variables
 
 // correct texts for popover
@@ -19,17 +20,36 @@ var templateData = {
 };
 
 var RegistrationPage = function(){
+    var common = new Common();
 	// TODO stage env as default variable
 	// browser.get('https://webapp.sf-dev1.com/de-de/register');
+    this.registerForm  = element(by.className("register-panel-container"));
 
     this.emailField = element(by.model("vm.email"));
     this.emailRepeatField = element(by.model("vm.email2"));
     this.passwordField = element(by.model("vm.password"));
     this.countrySelect = element(by.model("vm.country"));
 
-    this.popover = element(by.className('popover'));
-    this.popoverPasswordHint = this.popover.element(by.className("label"));
+    this.passwordPopover = element(by.className("password-group")).element(by.className("popover"));
+    this.emailPopover = element(by.name("registerForm")).all(by.className("form-group")).get(0);
+    this.email2Popover = element(by.name("registerForm")).all(by.className("form-group")).get(1);
 
+    this.errorBlock = element(by.className("alert"));
+
+    this.popover = {
+        "password": {
+            template: this.passwordPopover,
+            passwordHint: this.passwordPopover.element(by.className("label"))
+        },
+        "email": {
+            template: this.emailPopover,
+            passwordHint: this.emailPopover.element(by.className("label"))
+        },
+        "email2": {
+            template: this.email2Popover,
+            passwordHint: this.email2Popover.element(by.className("label"))
+        }
+    }
     //TODO add name tag
     this.termsOfUseLink = element(by.linkText("Nutzungsbedingungen"));
     this.privacyPolicyLink = element(by.linkText("Datenschutzrichtlinie"));
@@ -38,14 +58,9 @@ var RegistrationPage = function(){
     this.registerButton = element(by.buttonText("Jetzt registrieren"));
 
     //methods
-    this.setField = function(filed, value){
-        filed.clear().then(function(){
-            filed.sendKeys(value);
-        });
-    };
-
     this.isPopoverCorrect = function(type){
-        return protractor.promise.all([checkPopoverHeader(type, this.popover), checkPopoverHints(type, this.popover)]).then(function(params){
+        var popover = this.popover[type];
+        return protractor.promise.all([checkPopoverHeader(type, popover.template), checkPopoverHints(type, popover.template)]).then(function(params){
             var out = true;
             params.forEach(function(p){
                 if(!p){
@@ -61,9 +76,9 @@ var RegistrationPage = function(){
       * check hint on 'index' position
       * (e.g. when there are 3 hint we can check hint with index 1, 2 or 3)
       **/
-    this.isHintClassCorrect = function(index, expectedClass){
-    var deferred = protractor.promise.defer();
-        this.popover.all(by.tagName('li')).get(index - 1).getAttribute("class").then(function(cls){
+    this.isHintClassCorrect = function(index, expectedClass, type){
+        var deferred = protractor.promise.defer();
+        this.popover[type].template.all(by.tagName('li')).get(index - 1).getAttribute("class").then(function(cls){
             deferred.fulfill(cls === expectedClass);
         });
 
@@ -76,7 +91,6 @@ var RegistrationPage = function(){
         var wrapper = field.getWebElement();
 
         getElementClasses(wrapper.getDriver().findElement(by.className("validity-mark")).findElement(by.tagName('span'))).then(function (icoClasses) {
-            console.log("classes for " + icon + " : " + icoClasses);
             switch (icon) {
                 case "x":
                     deferred.fulfill(stringContain(icoClasses, "text-danger") && stringContain(icoClasses, "fa-times"));
@@ -115,7 +129,7 @@ var RegistrationPage = function(){
             return false;
         }else{
             var deferred = protractor.promise.defer();
-            getElementClasses(this.popoverPasswordHint).then(function(classes){
+            getElementClasses(this.popover["password"].passwordHint).then(function(classes){
                 switch(expectedHint){
                     case "very_weak":
                         deferred.fulfill(stringContain(classes, "label-danger"));
@@ -142,11 +156,13 @@ var RegistrationPage = function(){
         var deferred = protractor.promise.defer();
         this.countrySelect.sendKeys(country);
         protractor.promise.all([
-            this.setField(this.emailField, email),
-            this.setField(this.emailRepeatField, email2),
-            this.setField(this.passwordField, password)
+            common.setField(this.emailField, email),
+            common.setField(this.emailRepeatField, email2),
+            common.setField(this.passwordField, password)
         ]).then(function(){
             deferred.fulfill();
+        }, function(err) {
+            deferred.reject(err);
         });
 
         return deferred.promise;
@@ -162,7 +178,7 @@ var checkPopoverHeader = function (type, popover) {
     var template = templateData[type];
 
     if(!popover.isDisplayed() || !templateData[type]){
-        console.log("no popover or template for " + type);
+        console.log("//-- no popover or template for " + type);
         return deferred.reject("no popover or template for " + type);
     }
 
@@ -216,6 +232,6 @@ var getElementClasses = function(field){
     });
 
     return deferred.promise;
-}
+};
 
 module.exports = RegistrationPage;

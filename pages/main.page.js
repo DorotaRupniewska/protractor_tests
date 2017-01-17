@@ -30,18 +30,6 @@ var MainPage = function(){
     // and then
     // forEach navigation e -> element(e.name).click() ...
     this.footerLinks1 = [
-        // {selector: navigation.element(by.linkText("Häufig gestellte Fragen (FAQ)")), url: browser.params.MAIN_URL_SF + '/faq/'},
-        // {selector: navigation.element(by.linkText("Support")), url: browser.params.MAIN_URL_SF + '/support/'},
-        // {selector: navigation.element(by.linkText("Kontakt")), url: browser.params.MAIN_URL_SF + '/kontakt/'},
-        // {selector: navigation.element(by.linkText("Bezugsquellen")), url: browser.params.MAIN_URL_SF + '/bezugsquellen/'},
-        // {selector: navigation.element(by.linkText("Nutzungsbedingungen")), url: browser.params.MAIN_URL_SF + '/nutzungsbedingungen/'},
-        // {selector: navigation.element(by.linkText("Datenschutzrichtlinie")), url: browser.params.MAIN_URL_SF + '/datenschutzrichtlinie/'},
-        // {selector: navigation.element(by.linkText("Cookies")), url: browser.params.MAIN_URL_SF + '/cookies/'},
-        // {selector: navigation.element(by.linkText("Open source")), url: browser.params.MAIN_URL_SF + '/open-source/'},
-        // {selector: navigation.element(by.linkText("Ueber uns")), url: browser.params.MAIN_URL_SF + '/ueber-uns/'},
-        // {selector: navigation.element(by.linkText("Jobs")), url: browser.params.MAIN_URL_SF + '/jobs/'},
-        // {selector: navigation.element(by.linkText("Blog")), url: browser.params.MAIN_URL_SF + '/blog/'},
-        // {selector: navigation.element(by.linkText("Presse")), url: browser.params.MAIN_URL_SF + '/presse/'}
         {url: 'https://www.smartfrog.com/de/faq/', text: "Häufig gestellte Fragen (FAQ)"},
         {url: browser.params.MAIN_URL_SF + "/support/", text: "Support"},
         {url: browser.params.MAIN_URL_SF + "/kontakt/", text: "Kontakt"},
@@ -58,7 +46,6 @@ var MainPage = function(){
     this.footerLinks3 = [
         {url: browser.params.MAIN_URL_SF + "/ueber-uns/", text: "Über uns"},
         {url: browser.params.MAIN_URL_SF + "/jobs/", text: "Jobs"},
-        // {url: browser.params.MAIN_URL_SF + "/blog/", text: "Blog"},
         {url: 'https://www.smartfrog.com/de/blog/', text: "Blog"},
         {url: browser.params.MAIN_URL_SF + "/presse/", text: "Presse"}
     ];
@@ -66,47 +53,6 @@ var MainPage = function(){
     //methods
     this.go = function(){
         browser.get(browser.params.MAIN_URL_DEV);
-    };
-
-    /**
-     * check if each link opens correct page
-     * @param links array of links to check
-     * @returns promise
-     *
-     * !! at now it is too complicated - so never use
-     * !! to refactor maybe
-     */
-    this.ifLinkOpenCorrectPage = function(links){
-        var deferred = protractor.promise.defer();
-        var promiseLists = [];
-
-        //check with hardcoded footerLinks
-
-        links.then(function(linkList) {
-            for(var i = 0; i < linkList.length; i++){
-                promiseLists.push(linkList[i].getAttribute("href"));
-            }
-
-            return protractor.promise.all(promiseLists).then(function(list){
-                for(var i = 0; i < list.length; i++){
-                    if(!footerLinksToRedirect[list[i]]){
-                        return deferred.reject("no link " + list[i]);
-                    }else{
-                        console.log("for: ", footerLinksToRedirect[list[i]].name);
-                        isPageCorrect(list[i], footerLinksToRedirect[list[i]].mock_url).then(function(resp) {
-                            console.log("isPageCorrect true ", resp);
-                        }, function(resp){
-                            // deferred.fulfill(true);
-                            console.log("isPageCorrect false ", resp);
-                            return deferred.reject(resp);
-                        });
-                    }
-                }
-                deferred.fulfill(true);
-            });
-        });
-
-        return deferred.promise;
     };
 
     this.isPageCorrect = function(hrefLink) {
@@ -130,8 +76,9 @@ var isPageCorrect = function(hrefLink, mockUrl){
     return browser.getCurrentUrl().then(function(gotUrl){
         //for clear fail info purpose
         if(gotUrl !== mockUrl){
-            console.log("failed for link ", footerLinksToRedirect[hrefLink].name);
+            console.log("//-- failed for link ", footerLinksToRedirect[hrefLink].name);
         }
+    browser.ignoreSynchronization = false;
         return gotUrl === mockUrl;
     });
 

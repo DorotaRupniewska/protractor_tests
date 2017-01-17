@@ -2,12 +2,14 @@
 
 var RegisterPage = require("../pages/register.page.js");
 var MainPage = require("../pages/main.page.js");
-var seed = 'automation'+ Math.round(new Date().getTime()/1000);
+var Common = require("../commons/common.js");
+var WelcomeWizadrHelper = require("../commons/welcomeWizard.helper.js");
+
+var common = new Common();
 
 /** variables **/
-var email = "test+" + seed +"@test.com";
+var email = common.email;
 var incompleteEmail = "asd";
-var email2 = "test+" + seed +"@test.com";
 var password = {
     inclomplete: "asd",
     very_weak: "asdqwe",  //red
@@ -15,15 +17,32 @@ var password = {
     average: "asdqweAa1",    //orange
     strong: "asdqweAa1@"      //green
 };
-var countryCode = "DE";
+var countryCode = common.countryCode;
 
 describe("Registration page", function(){
-	var registerPage, mainPage;
+	var registerPage, mainPage, welcomeWizard;
+
 
 	beforeAll(function(){
+        welcomeWizard = new WelcomeWizadrHelper();
+        mainPage = new MainPage();
 		registerPage = new RegisterPage();
+
+        mainPage.go();
+        browser.waitForAngular();
+        common.logout();
+
 		registerPage.go();
 	});
+
+    afterAll(function(){
+        welcomeWizard.welcomeWizardWrapper.isDisplayed().then(function() {
+            welcomeWizard.tryItBtn.click();
+            common.logout();
+        }, function() {
+            common.logout();
+        });
+    });
 
 //-- Check if all the described linkages (privacy policy, etc.) are implemented
 	it('should display Terms of Use link', function(){
@@ -40,50 +59,58 @@ describe("Registration page", function(){
 
 //-- Check if there is a error message when entering no or an incomplete Email address
     it('should display correct error message when entering no email address', function(){
-        registerPage.setField(registerPage.emailField, "");
+        common.setField(registerPage.emailField, "");
         registerPage.emailField.click();
-        expect(registerPage.isPopoverCorrect("email")).toBe(true);
+        registerPage.emailPopover.isDisplayed().then(function() {
+            expect(registerPage.isPopoverCorrect("email")).toBe(true);
+        });
     });
 
     it('should display correct error message when entering incomplete email address', function(){
-        registerPage.setField(registerPage.emailField, incompleteEmail);
+        common.setField(registerPage.emailField, incompleteEmail);
         registerPage.emailField.click();
-        expect(registerPage.isPopoverCorrect("email")).toBe(true);
+        registerPage.emailPopover.isDisplayed().then(function() {
+            expect(registerPage.isPopoverCorrect("email")).toBe(true);
+        });
     });
 
     it('should display red hint in popover when entering no email address', function(){
-        registerPage.setField(registerPage.emailField, "");
+        common.setField(registerPage.emailField, "");
         registerPage.emailField.click();
-        expect(registerPage.isHintClassCorrect(1, "text-danger")).toBe(true);
+        expect(registerPage.isHintClassCorrect(1, "text-danger", "email")).toBe(true);
     });
 
     it('should display error icon when entering incomplete email address', function(){
-        registerPage.setField(registerPage.emailField, incompleteEmail);
+        common.setField(registerPage.emailField, incompleteEmail);
         registerPage.emailField.click();
         expect(registerPage.isIconCorrect(registerPage.emailField, "x")).toBe(true);
     });
 
 //-- Check if there is a 'correct' message when entering a valid Email address
     it('should display correct error message when entering complete email address', function(){
-        registerPage.setField(registerPage.emailField, email);
+        common.setField(registerPage.emailField, email);
         registerPage.emailField.click();
-        expect(registerPage.isPopoverCorrect("email")).toBe(true);
+        registerPage.emailPopover.isDisplayed().then(function() {
+            expect(registerPage.isPopoverCorrect("email")).toBe(true);
+        });
     });
 
     it('should display correct error message when entering complete email address', function(){
-        registerPage.setField(registerPage.emailField, email);
+        common.setField(registerPage.emailField, email);
         registerPage.emailField.click();
-        expect(registerPage.isPopoverCorrect("email")).toBe(true);
+        registerPage.emailPopover.isDisplayed().then(function() {
+            expect(registerPage.isPopoverCorrect("email")).toBe(true);
+        });
     });
 
     it('should display red hint in popover when entering complete email address', function(){
-        registerPage.setField(registerPage.emailField, email);
+        common.setField(registerPage.emailField, email);
         registerPage.emailField.click();
-        expect(registerPage.isHintClassCorrect(1, "text-success")).toBe(true);
+        expect(registerPage.isHintClassCorrect(1, "text-success", "email")).toBe(true);
     });
 
     it('should display tick icon when entering complete email address', function(){
-        registerPage.setField(registerPage.emailField, email);
+        common.setField(registerPage.emailField, email);
         registerPage.emailField.click();
         expect(registerPage.isIconCorrect(registerPage.emailField, "tick")).toBe(true);
     });
@@ -91,60 +118,69 @@ describe("Registration page", function(){
 //-- Check if there is a error message when entering no or an incomplete Email address the second time
     //TODO popover sholud be visible ONLY when first email is corrected
     it('should display correct error message when entering no email address the second time', function(){
-        registerPage.setField(registerPage.emailField, email);
-        registerPage.setField(registerPage.emailRepeatField, "");
+        common.setField(registerPage.emailField, email);
+        registerPage.emailField.click();
+        common.setField(registerPage.emailRepeatField, "");
         registerPage.emailRepeatField.click();
-        expect(registerPage.isPopoverCorrect("email2")).toBe(true);
-    });
+        registerPage.email2Popover.isDisplayed().then(function() {
+            expect(registerPage.isPopoverCorrect("email2")).toBe(true);
+        });
+     });
 
     it('should display correct error message when entering incomplete email address the second time', function(){
-        registerPage.setField(registerPage.emailRepeatField, incompleteEmail);
+        common.setField(registerPage.emailRepeatField, incompleteEmail);
         registerPage.emailRepeatField.click();
-        expect(registerPage.isPopoverCorrect("email2")).toBe(true);
+        registerPage.email2Popover.isDisplayed().then(function() {
+            expect(registerPage.isPopoverCorrect("email2")).toBe(true);
+        });
     });
 
     it('should display red hint in popover when entering no email address the second time', function(){
-        registerPage.setField(registerPage.emailRepeatField, "");
+        common.setField(registerPage.emailRepeatField, "");
         registerPage.emailRepeatField.click();
-        expect(registerPage.isHintClassCorrect(1, "text-danger")).toBe(true);
+        expect(registerPage.isHintClassCorrect(1, "text-danger", "email2")).toBe(true);
     });
 
-    xit('should display error icon when entering incomplete email address the second time', function(){
-        registerPage.setField(registerPage.emailRepeatField, "");
+    it('should display error icon when entering incomplete email address the second time', function(){
+        common.setField(registerPage.emailRepeatField, incompleteEmail);
         registerPage.emailRepeatField.click();
-        expect(registerPage.isIconCorrect(registerPage.emailRepeatField, "x")).toBe(true);
+        expect(registerPage.isIconCorrect(registerPage.emailRepeatField, "tick")).toBe(true);
     });
 
 //-- Check if there is a 'correct' message when entering a valid Email address the second time
     it('should display correct error message when entering complete email address the second time', function(){
-        registerPage.setField(registerPage.emailRepeatField, email);
+        common.setField(registerPage.emailRepeatField, email);
         registerPage.emailRepeatField.click();
         expect(registerPage.isPopoverCorrect("email2")).toBe(true);
     });
 
     it('should display correct error message when entering complete email address the second time', function(){
-        registerPage.setField(registerPage.emailRepeatField, email);
+        common.setField(registerPage.emailRepeatField, email);
         registerPage.emailRepeatField.click();
-        expect(registerPage.isPopoverCorrect("email2")).toBe(true);
+        registerPage.email2Popover.isDisplayed().then(function() {
+            expect(registerPage.isPopoverCorrect("email2")).toBe(true);
+        });
     });
 
     it('should display red hint in popover when entering complete email address the second time', function(){
-        registerPage.setField(registerPage.emailRepeatField, email);
+        common.setField(registerPage.emailRepeatField, email);
         registerPage.emailRepeatField.click();
-        expect(registerPage.isHintClassCorrect(1, "text-success")).toBe(true);
+        expect(registerPage.isHintClassCorrect(1, "text-success", "email2")).toBe(true);
     });
 
     it('should display tick icon when entering complete email address the second time', function(){
-        registerPage.setField(registerPage.emailRepeatField, email);
+        common.setField(registerPage.emailRepeatField, email);
         registerPage.emailRepeatField.click();
         expect(registerPage.isIconCorrect(registerPage.emailRepeatField, "tick")).toBe(true);
     });
 
 //-- Check if there is a 'How strong is your password'-note after entering six letters/numbers/etc. in the password field
     it('should display correct error message when start to enter a password', function(){
-        registerPage.setField(registerPage.passwordField, password.inclomplete);
+        common.setField(registerPage.passwordField, password.inclomplete);
         registerPage.passwordField.click();
-        expect(registerPage.isPopoverCorrect("password")).toBe(true);
+        registerPage.passwordPopover.isDisplayed().then(function() {
+            expect(registerPage.isPopoverCorrect("password")).toBe(true);
+        });
     });
 
     /**
@@ -155,73 +191,73 @@ describe("Registration page", function(){
      */
 
     it('should display correct hints when password is shorter than 6 characters', function(){
-        registerPage.setField(registerPage.passwordField, password.inclomplete);
+        common.setField(registerPage.passwordField, password.inclomplete);
         registerPage.passwordField.click();
 
-        expect(registerPage.isHintClassCorrect(1, "text-danger")).toBe(true);
-        expect(registerPage.isHintClassCorrect(2, "text-success")).toBe(true);
+        expect(registerPage.isHintClassCorrect(1, "text-danger", "password")).toBe(true);
+        expect(registerPage.isHintClassCorrect(2, "text-success", "password")).toBe(true);
 
-        registerPage.setField(registerPage.passwordField, registerPage.getRandomPassword(5));
+        common.setField(registerPage.passwordField, registerPage.getRandomPassword(5));
         registerPage.passwordField.click();
 
-        expect(registerPage.isHintClassCorrect(1, "text-danger")).toBe(true);
-        expect(registerPage.isHintClassCorrect(2, "text-success")).toBe(true);
+        expect(registerPage.isHintClassCorrect(1, "text-danger", "password")).toBe(true);
+        expect(registerPage.isHintClassCorrect(2, "text-success", "password")).toBe(true);
     });
 
     it('should display correct hints when password length is between 6 - 64 characters', function(){
-        registerPage.setField(registerPage.passwordField, registerPage.getRandomPassword(6));
+        common.setField(registerPage.passwordField, registerPage.getRandomPassword(6));
         registerPage.passwordField.click();
 
-        expect(registerPage.isHintClassCorrect(1, "text-success")).toBe(true);
-        expect(registerPage.isHintClassCorrect(2, "text-success")).toBe(true);
+        expect(registerPage.isHintClassCorrect(1, "text-success", "password")).toBe(true);
+        expect(registerPage.isHintClassCorrect(2, "text-success", "password")).toBe(true);
 
-        registerPage.setField(registerPage.passwordField, registerPage.getRandomPassword(63));
+        common.setField(registerPage.passwordField, registerPage.getRandomPassword(63));
         registerPage.passwordField.click();
 
-        expect(registerPage.isHintClassCorrect(1, "text-success")).toBe(true);
-        expect(registerPage.isHintClassCorrect(2, "text-success")).toBe(true);
+        expect(registerPage.isHintClassCorrect(1, "text-success", "password")).toBe(true);
+        expect(registerPage.isHintClassCorrect(2, "text-success", "password")).toBe(true);
     });
 
     it('should display correct hints when password is longer than 64 characters', function(){
-        registerPage.setField(registerPage.passwordField, registerPage.getRandomPassword(66));
+        common.setField(registerPage.passwordField, registerPage.getRandomPassword(66));
         registerPage.passwordField.click();
 
-        expect(registerPage.isHintClassCorrect(1, "text-success")).toBe(true);
-        expect(registerPage.isHintClassCorrect(2, "text-danger")).toBe(true);
+        expect(registerPage.isHintClassCorrect(1, "text-success", "password")).toBe(true);
+        expect(registerPage.isHintClassCorrect(2, "text-danger", "password")).toBe(true);
 
     });
 
 //-- Check if there is a 'How strong is your password' note after entering six letters/numbers/etc. in the password field
     it('should display "How strong is your password" note after entering six characters', function(){
-        registerPage.setField(registerPage.passwordField, registerPage.getRandomPassword(6));
+        common.setField(registerPage.passwordField, registerPage.getRandomPassword(6));
         registerPage.passwordField.click();
 
-        expect(registerPage.popoverPasswordHint.isDisplayed()).toBe(true);
+        expect(registerPage.popover["password"].passwordHint.isDisplayed()).toBe(true);
     });
 
     it('should display correct hint "How strong is your password" if very weak password provided', function(){
-        registerPage.setField(registerPage.passwordField, password.very_weak);
+        common.setField(registerPage.passwordField, password.very_weak);
         registerPage.passwordField.click();
 
         expect(registerPage.isStrongPasswordHintCorrect('very_weak')).toBe(true);
     });
 
     it('should display correct hint "How strong is your password" if weak password provided', function(){
-        registerPage.setField(registerPage.passwordField, password.weak);
+        common.setField(registerPage.passwordField, password.weak);
         registerPage.passwordField.click();
 
         expect(registerPage.isStrongPasswordHintCorrect('weak')).toBe(true);
     });
 
     it('should display correct hint "How strong is your password" if average password provided', function(){
-        registerPage.setField(registerPage.passwordField, password.average);
+        common.setField(registerPage.passwordField, password.average);
         registerPage.passwordField.click();
 
         expect(registerPage.isStrongPasswordHintCorrect('average')).toBe(true);
     });
 
     it('should display correct hint "How strong is your password" if strong password provided', function(){
-        registerPage.setField(registerPage.passwordField, password.strong);
+        common.setField(registerPage.passwordField, password.strong);
         registerPage.passwordField.click();
 
         expect(registerPage.isStrongPasswordHintCorrect('strong')).toBe(true);
@@ -244,7 +280,6 @@ describe("Registration page", function(){
 
     it('should enable "Register" button if all required fields are fill in', function(){
         registerPage.fillInRegisterFields(email, email, password.average, countryCode);
-
         expect(registerPage.registerButton.isEnabled()).toBe(true);
     });
 
@@ -255,10 +290,16 @@ describe("Registration page", function(){
         registerPage.registerButton.isEnabled().then(function(){
             registerPage.registerButton.click();
             browser.waitForAngular();
-            mainPage = new MainPage();
-            mainPage.go();
-            browser.waitForAngular();
-            expect(browser.getCurrentUrl()).toEqual(browser.params.MAIN_URL_DEV + "/");
+            common.errorBlock.isDisplayed().then(function() {
+                console.log("error occured");
+            }, function(){
+                browser.sleep(2000);
+                expect(browser.getCurrentUrl()).toEqual(browser.params.MAIN_URL_DEV + "/");
+                browser.sleep(2000);
+                welcomeWizard.tryItBtn.click();
+                browser.sleep(2000);
+            });
+
         });
 
     });
