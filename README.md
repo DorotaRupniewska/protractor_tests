@@ -21,7 +21,9 @@ Available suite tests (listed in conf.js -> suites):
 	- login (QA-1734)
 	- contactLink (QA-1732)
 	- footerLinks (QA-2306)
+	- register (QA-2253)
 	- welcomeWizard (QA-2260)
+	- userSettings (QA-2210)
 
 login with params (not used at this version):	
 	protractor conf.js --suite login --parameters.login.username=user_name --parameters.login.password=user_password

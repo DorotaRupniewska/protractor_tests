@@ -10,7 +10,8 @@ exports.config = {
   	register: './specs/register_QA-2253.spec.js',
     contactLink: './specs/contactLink_QA-1732.spec.js',
     footerLinks: './specs/footerLinks_QA-2306.spec.js',
-    welcomeWizard: './specs/welcomeWizard_QA-2260.spec.js'
+    welcomeWizard: './specs/welcomeWizard_QA-2260.spec.js',
+    userSettings: './specs/userSettings_QA-2210.spec.js'
   },
   jasmineNodeOpts: {
     showColors: true
