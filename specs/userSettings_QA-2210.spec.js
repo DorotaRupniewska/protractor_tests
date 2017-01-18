@@ -44,7 +44,7 @@ describe("User setting page", function(){
     });
 
 //--update his Email Address
-    it('should allow user to change his email address', function() {
+    xit('should allow the user to change his email address', function() {
         accountPage.changeEmailLink.isDisplayed().then(function() {
             accountPage.changeEmailLink.click();
             browser.waitForAngular();
@@ -73,7 +73,7 @@ describe("User setting page", function(){
     });
 
 //-- update his password
-    it('should allow user to update his password', function() {
+    xit('should allow the user to update his password', function() {
         accountPage.go();
         browser.waitForAngular();
 
@@ -89,6 +89,26 @@ describe("User setting page", function(){
                         expect(accountPage.successBlock.isDisplayed()).toBe(true, "success message should be displayed");
                     }
                 });
+            });
+        });
+    });
+
+//-- update his Invoice Address
+    it('should allow the user to update his invoice address', function() {
+        accountPage.go();
+        browser.waitForAngular();
+
+        accountPage.changeInvoiceAddressLink.isDisplayed().then(function() {
+            accountPage.changeInvoiceAddressLink.click();
+            browser.waitForAngular();
+            expect(browser.getCurrentUrl()).toEqual(browser.params.MAIN_URL_DEV + "/account/invoice-address");
+            accountPage.fillInChangeInvoiceAddressForm(false);
+            accountPage.changeInvoiceAddressBtn.isDisplayed().then(function() {
+                accountPage.changeInvoiceAddressBtn.click();
+                accountPage.changeInvoiceAddressSuccessBlock.isDisplayed().then(function() {
+                    browser.sleep(2000);
+                    console.log("invoice address changed");
+                })
             });
         });
     });

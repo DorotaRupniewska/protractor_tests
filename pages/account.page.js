@@ -1,5 +1,44 @@
 'use strict';
 
+var invoiceAddress = {
+    "salutation": {
+        "current": "Ms",
+        "new": "Mr"
+    },
+    "firstname": {
+        "current": "Test Test",
+        "new": "Firstname"
+    },
+    "lastname": {
+        "current": "Test 2",
+        "new": "Lastname"
+    },
+    "company": {
+        "current": "Smartfrog",
+        "new": "Company name"
+    },
+    "street": {
+        "current": "Mohrenstr.",
+        "new": "Somestr."
+    },
+    "number": {
+        "current": "34",
+        "new": "123"
+    },
+    "zipcode": {
+        "current": "10117",
+        "new": "91056"
+    },
+    "city": {
+        "current": "Berlin",
+        "new": "Krakow"
+    },
+    "mobile": {
+        "current": "",
+        "new": "12-12-123"
+    }
+};
+
 var AccountPage = function(){
     this.accountOverviewWrapper = element(by.className('account-overview')).all(by.className("item-wrapper"));
 
@@ -24,6 +63,22 @@ var AccountPage = function(){
     this.changePasswordBtn = this.changePasswordForm.element(by.css("[type='submit']"));
     this.changePasswordSpinnerIco = this.changePasswordForm.element(by.className("fa-spinner"));
 
+    //change invoice address
+    this.changeInvoiceAddressForm = element(by.className("invoice-address-edit-form"));
+    this.changeInvoiceAddressLink = this.accountOverviewWrapper.get(2).element(by.tagName('a'));
+    this.invoiceSalutationField = this.changeInvoiceAddressForm.element(by.model("vm.address.salutation"));
+    this.invoiceFirstNameField = this.changeInvoiceAddressForm.element(by.model("vm.address.firstName"));
+    this.invoiceLastNameField = this.changeInvoiceAddressForm.element(by.model("vm.address.name"));
+    this.invoiceCompanyField = this.changeInvoiceAddressForm.element(by.model("vm.address.companyName"));
+    this.invoiceStreetField = this.changeInvoiceAddressForm.element(by.model("vm.address.street"));
+    this.invoiceNumberField = this.changeInvoiceAddressForm.element(by.model("vm.address.houseNumber"));
+    this.invoiceZipCodeField = this.changeInvoiceAddressForm.element(by.model("vm.address.zip"));
+    this.invoiceCityField = this.changeInvoiceAddressForm.element(by.model("vm.address.city"));
+    this.invoiceMobileField = this.changeInvoiceAddressForm.element(by.model("vm.address.mobilePhoneNumber"));
+
+    this.changeInvoiceAddressBtn = this.changeInvoiceAddressForm.element(by.css("[type='submit']"));
+    this.changeInvoiceAddressSuccessBlock = this.changeInvoiceAddressForm.element(by.className('alert-success'));
+
     //methods
     this.fillInChangeEmailForm = function(email) {
         this.userEmailField.sendKeys("");
@@ -39,7 +94,34 @@ var AccountPage = function(){
         this.newPasswordField.sendKeys(newPassword);
         this.newPasswordConfirmField.sendKeys("");
         this.newPasswordConfirmField.sendKeys(newPassword);
-    }
+    };
+
+    //TODO check change salutation !!!
+    this.fillInChangeInvoiceAddressForm = function(isNew){
+        var version = isNew ? "new": "current";
+        this.clearInvoiceAddressForm();
+
+        this.invoiceSalutationField.sendKeys(invoiceAddress.salutation[version]);
+        this.invoiceFirstNameField.sendKeys(invoiceAddress.firstname[version]);
+        this.invoiceLastNameField.sendKeys(invoiceAddress.lastname[version]);
+        this.invoiceCompanyField.sendKeys(invoiceAddress.company[version]);
+        this.invoiceStreetField.sendKeys(invoiceAddress.street[version]);
+        this.invoiceNumberField.sendKeys(invoiceAddress.number[version]);
+        this.invoiceZipCodeField.sendKeys(invoiceAddress.zipcode[version]);
+        this.invoiceCityField.sendKeys(invoiceAddress.city[version]);
+        this.invoiceMobileField.sendKeys(invoiceAddress.mobile[version]);
+    };
+
+    this.clearInvoiceAddressForm = function(){
+        this.invoiceFirstNameField.clear();
+        this.invoiceLastNameField.clear();
+        this.invoiceCompanyField.clear();
+        this.invoiceStreetField.clear();
+        this.invoiceNumberField.clear();
+        this.invoiceZipCodeField.clear();
+        this.invoiceCityField.clear();
+        this.invoiceMobileField.clear();
+    };
 
 	this.go = function(){
         browser.get(browser.params.MAIN_URL_DEV + '/account/');
