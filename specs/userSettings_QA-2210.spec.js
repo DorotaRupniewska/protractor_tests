@@ -44,7 +44,7 @@ describe("User setting page", function(){
     });
 
 //--update his Email Address
-    xit('should allow the user to change his email address', function() {
+    it('should allow the user to change his email address', function() {
         accountPage.changeEmailLink.isDisplayed().then(function() {
             accountPage.changeEmailLink.click();
             browser.waitForAngular();
@@ -62,7 +62,7 @@ describe("User setting page", function(){
         });
     });
 
-    xit('should change user email to previous one', function() {
+    it('should change user email to previous one', function() {
         accountPage.go();
         browser.waitForAngular();
 
@@ -108,7 +108,7 @@ describe("User setting page", function(){
     });
 
 //-- update his Invoice Address
-    xit('should allow the user to update his invoice address', function() {
+    it('should allow the user to update his invoice address', function() {
         accountPage.go();
         browser.waitForAngular();
 
@@ -145,7 +145,7 @@ describe("User setting page", function(){
     });
 
 //-- disable Account - open popup
-    xit("should allow the user to disable his account", function() {
+    it("should allow the user to disable his account", function() {
         accountPage.go();
         browser.waitForAngular();
         accountPage.disableAccountLink.isDisplayed().then(function() {
@@ -162,7 +162,7 @@ describe("User setting page", function(){
     });
 
 //-- subscrible/unsubscribe to Newsletter
-    xit("should allow user to change the status of his newsletter subscription", function() {
+    it("should allow user to change the status of his newsletter subscription", function() {
         accountPage.go();
         browser.waitForAngular();
 

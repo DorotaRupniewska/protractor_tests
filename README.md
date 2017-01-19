@@ -24,6 +24,8 @@ Available suite tests (listed in conf.js -> suites):
 	- register (QA-2253)
 	- welcomeWizard (QA-2260)
 	- userSettings (QA-2210)
+	SHOP
+	- shop_login (QA-1981)
 
 login with params (not used at this version):	
 	protractor conf.js --suite login --parameters.login.username=user_name --parameters.login.password=user_password
