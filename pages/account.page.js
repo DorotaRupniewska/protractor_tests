@@ -79,6 +79,24 @@ var AccountPage = function(){
     this.changeInvoiceAddressBtn = this.changeInvoiceAddressForm.element(by.css("[type='submit']"));
     this.changeInvoiceAddressSuccessBlock = this.changeInvoiceAddressForm.element(by.className('alert-success'));
 
+    //disable account
+    this.disableAccountLink = this.accountOverviewWrapper.get(3).element(by.tagName('a'));
+    this.disableAccountPopup = element(by.className("modal-disable-account"));
+    this.disableAccountPopupCancelBtn = this.disableAccountPopup.all(by.repeater("btn in dialog.buttons")).get(0);
+
+    //subscribe / unsubscribe to the newsletter
+    this.changeNewsletterSubscriptionStatusLink = this.accountOverviewWrapper.get(4).element(by.tagName('a'));
+
+    //invoices
+    this.invoicesLink = this.accountOverviewWrapper.get(5).element(by.tagName('a'));
+    this.invoicesListWrapper = element(by.className("invoices-list-table"));
+    this.invoicesList = this.invoicesListWrapper.all(by.repeater("invoice in vm.invoicesList"));
+
+    //orders
+    this.ordersLink = this.accountOverviewWrapper.last().all(by.tagName('a')).last();
+    this.ordersListWrapper = element(by.className("invoices-list-table"));
+    this.ordersList = this.ordersListWrapper.all(by.repeater("order in vm.ordersList"));
+
     //methods
     this.fillInChangeEmailForm = function(email) {
         this.userEmailField.sendKeys("");
@@ -87,13 +105,13 @@ var AccountPage = function(){
         this.userEmailConfirmField.sendKeys(email);
     };
 
-    this.fillInChangePasswordForm = function(currentPassword, newPassword) {
+    this.fillInChangePasswordForm = function(password) {
         this.currentPasswordField.sendKeys("");
-        this.currentPasswordField.sendKeys(currentPassword);
         this.newPasswordField.sendKeys("");
-        this.newPasswordField.sendKeys(newPassword);
         this.newPasswordConfirmField.sendKeys("");
-        this.newPasswordConfirmField.sendKeys(newPassword);
+        this.currentPasswordField.sendKeys(password);
+        this.newPasswordField.sendKeys(password);
+        this.newPasswordConfirmField.sendKeys(password);
     };
 
     //TODO check change salutation !!!
