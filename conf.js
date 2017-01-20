@@ -24,7 +24,7 @@ exports.config = {
     MAIN_URL_DEV: "https://webapp.sf-dev1.com/de-de",
     MAIN_URL_DEV_GB: "https://webapp.sf-dev1.com/en-us",
     MAIN_URL_SF: "https://www.smartfrog.com/de-de",
-    MAIN_URL_SHOP: "https://www.sf-dev1.com/de-de/shop/products",
+    MAIN_URL_SHOP: "https://www.sf-dev1.com/de-de/shop",
 
   	login: {
       username: 'default',
